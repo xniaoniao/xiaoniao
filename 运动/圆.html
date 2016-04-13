@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <style>
+    #box {
+      width: 300px;
+      height: 300px;
+      border: 1px solid #000;
+      position: relative;
+      border-radius: 50%;
+      margin: 50px auto;
+    }
+    #box span {
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      margin-left: -15px;
+      margin-top: -15px;
+      background-color: red;
+      top: 0;
+      left: 50%;
+    }
+  </style>
+</head>
+<body>
+  <div id="box">
+    <!-- <span></span> -->
+    <script>
+      function d2a(n) {
+        return n * Math.PI / 180;
+      }
+      var box = document.getElementById('box');
+      var n = 10;
+      var show = false;
+      for(var i = 0; i < n; i++) {
+        var creatCircle = document.createElement('span');
+        box.appendChild(creatCircle);
+      }
+      var circle = box.getElementsByTagName('span');
+      document.onclick = function() {
+        if(show) {
+          for (var i = 0; i < circle.length; i++) {
+            startMove(circle[i], 0);
+          }
+        } else {
+            for (var i = 0; i < circle.length; i++) {
+              var a = 360 / n * i;
+              startMove(circle[i], a);
+            }
+        }
+        show = !show;
+      }
+
+      var R = box.offsetWidth / 2;
+      function startMove(obj, target) {
+        var start = obj.c || 0;
+        var dis = target - start;
+        var n = 0;
+        var count = Math.floor(1000 / 30);
+        var timer = setInterval(function(){
+          n++;
+          var a = 1 - n / count;
+          var current = start + dis * (1 - a * a * a);
+          obj.c = current;
+          obj.style.left = R + Math.sin(d2a(current)) * R + 'px';
+          obj.style.top = R - Math.cos(d2a(current)) * R + 'px';
+          if(n == count) {
+            clearInterval(timer);
+          }
+        },30)
+
+      }
+    </script>
+  </div>
+</body>
+</html>

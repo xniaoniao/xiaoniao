@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <style>
+  *{ 
+    padding : 0; 
+    margin : 0; 
+    list-style : none;
+  }
+  .box{
+     width: 800px; 
+     border: 1px solid red;
+     margin: 50px auto; 
+     height: 358px; 
+     position: relative; 
+     overflow: hidden;
+   }
+  .box ul{ 
+    position: absolute;
+    top: 50%; 
+    height: 179px; 
+    margin-top: -90px;
+  }
+  .box li{ 
+    float: left; 
+    width: 260px; 
+    height: 179px; 
+    padding: 0 10px; 
+    position: relative;
+  }
+  .box img{
+   width: 260px; 
+   height: 179px;
+ }
+  </style>
+</head>
+<body>
+  <div class="box" id="box">
+    <ul>
+      <li><img src="img3/1.jpg" /></li>
+      <li><img src="img3/2.jpg" /></li>
+      <li><img src="img3/3.jpg" /></li>
+      <li><img src="img3/4.jpg" /></li>
+      <li><img src="img3/5.jpg" /></li>
+      <li><img src="img3/6.jpg" /></li>
+      <li><img src="img3/7.jpg" /></li>
+      <li><img src="img3/8.jpg" /></li>
+      </ul>
+  </div>
+  <script>
+    var box = document.getElementById('box');
+    var imagesBox = document.getElementsByTagName('ul')[0];
+    var imagesList = imagesBox.getElementsByTagName('li');
+    var images = document.getElementsByTagName('img');
+    imagesBox.style.width = imagesList[0].offsetWidth * imagesList.length + 'px'; 
+    var boxCenter = box.offsetWidth / 2;
+    var n = 0;
+    imagesBox.style.left = boxCenter - (n + 0.5) * imagesList[0].offsetWidth + 'px';
+    imagesBox.onmousedown = function(e) {
+      var ev = e || event;
+      var disX = ev.clientX - imagesBox.offsetLeft;
+      document.onmousemove = function(e) {
+         var ev = e || event;
+         var left = ev.clientX - disX;
+         if ( left > boxCenter - 0.5 * imagesList[0].offsetWidth) 
+          left = boxCenter - 0.5 * imagesList[0].offsetWidth;
+         if (left < boxCenter - (imagesList.length - 0.5) * imagesList[0].offsetWidth) 
+          left = boxCenter - (imagesList.length - 0.5) * imagesList[0].offsetWidth;
+         imagesBox.style.left = left + 'px';
+         reSize();
+      }
+      document.onmouseup = function() {
+        document.onmouseup = document.onmousemove = null;
+      }
+      return false;
+    }
+    reSize();
+    function reSize() {
+      for (var i = 0; i < imagesList.length; i++) {
+        var liToCenterDistance = boxCenter - (imagesList[i].offsetLeft + imagesBox.offsetLeft + imagesList[0].offsetWidth / 2);
+        var scale = 1 - Math.abs(liToCenterDistance / 500);
+        scale < 0.5 && (scale = 0.5);
+        images[i].style.width = scale * 520 + 'px';
+        images[i].style.height = scale * 358 + 'px';
+        images[i].style.marginTop = - (images[i].offsetHeight - 179) / 2 + 'px';
+        images[i].style.marginLeft = - (images[i].offsetWidth - 260) / 2+ 'px';
+        imagesList[i].style.zIndex = scale * 10000;
+      }
+    }
+  </script>
+</body>
+</html>

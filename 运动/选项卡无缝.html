@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <script src="javascript/birld.js"></script>
+  <style>
+   * { 
+    padding: 0;
+    margin: 0; 
+    list-style: none;
+  }
+  #box { 
+    width: 600px; 
+    height: 400px; 
+    margin: 0 auto; 
+    border: 1px solid red; 
+    position: relative; 
+    overflow: hidden;
+  }
+  #box ul { 
+    width: 2400px; 
+    position: absolute; 
+    left: 0; 
+    top: 0;
+  }
+  #box ul li { 
+    height: 400px;
+    width: 600px; 
+    float: left; 
+    font-size: 100px; 
+    color: #FFF; 
+    text-align: center; 
+    line-height:4 00px;
+  }
+  #box ol{ 
+    position: absolute; 
+    bottom: 20px; 
+    left: 50%; 
+    margin-left: -200px;
+  }
+  #box ol li{
+   width: 80px;
+   height: 20px; 
+   background: #FFF; 
+   float: left; 
+   margin: 0 10px;
+ }
+  #box span{ 
+    display: block;
+    height: 100%; 
+    width: 0; 
+    background: #000;
+  }
+  </style>
+
+</head>
+<body>
+ <div id="box">
+  <ul>
+      <li style="background:#F63;">1</li>
+      <li style="background:#6F3;">2</li>
+      <li style="background:#36F;">3</li>
+      <li style="background:#3F6;">4</li>
+    </ul>
+    <ol>
+      <li><span></span></li>
+      <li><span></span></li>
+      <li><span></span></li>
+      <li><span></span></li>
+    </ol>
+ </div>
+  <script>
+    var box = document.getElementById('box');
+    var banner = box.children[0];
+    var bannerList = banner.children;
+    var progressBar = document.getElementsByTagName('span');
+    var num = 0;
+    function next(){
+      move(progressBar[num], {'width' : 80}, {
+        'complete' : function() {
+          for(var i = 0; i < progressBar.length; i++) {
+            progressBar[i].style.width = 0;
+          }
+          num++;
+          if(num == progressBar.length) num = 0;
+          move(banner, {'left' : - num * bannerList[0].offsetWidth},{
+            'complete' : next
+          })
+        }
+      })
+    }
+    next();
+  </script> 
+</body>
+</html>

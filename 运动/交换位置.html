@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <script src="jquery.js"></script>
+  <style>
+   * { 
+    padding: 0; 
+    margin:0; 
+    list-style:none;
+  }
+  #box{ 
+    width:510px; 
+    margin:50px auto; 
+  }
+  #box li{ 
+    float:left; 
+    width:150px; 
+    height:150px; 
+    margin:10px;
+  }
+  #box img{ 
+    width:100%; 
+    height:100%;
+  }
+  .on{ 
+    border:2px solid red;
+    box-sizing:border-box;
+  }
+  </style>
+</head>
+<body>
+  <input type="button" value="按钮" id="btn" />
+  <ul id="box">
+    <li><img src="img/1.jpg" /></li>
+    <li><img src="img/2.jpg" /></li>
+    <li><img src="img/3.jpg" /></li>
+    <li><img src="img/4.jpg" /></li>
+    <li><img src="img/5.jpg" /></li>
+    <li><img src="img/6.jpg" /></li>
+    <li><img src="img/7.jpg" /></li>
+    <li><img src="img/8.jpg" /></li>
+    <li><img src="img/9.jpg" /></li>
+  </ul>
+  <script>
+    var position = [];
+    $('li').each(function (i) {
+      position.push({'left' : $('li')[i].offsetLeft, 'top' : $('li')[i].offsetTop });
+    })
+    $('li').each(function (i) {
+      $(this).css({'left' : position[i].left, 'top' : position[i].top, 'margin' : 0,
+                  'position' : 'absolute'})
+    });
+    var arr = $('li');
+
+    $('li').mousedown(function (e) {
+      var disX = e.clientX - this.offsetLeft;
+      var disY = e.clientY - this.offsetTop;
+      var _this = $(this);
+      $(document).mousemove(function (e) {
+        var left = e.clientX - disX;
+        var top = e.clientY - disY;
+        _this.css({'left' : left, 'top' : top});
+        var shortest = findShortestPath(_this, arr);
+        if (shortest) {
+          $(shortest).addClass('on');
+        }
+      });
+      $(document).mouseup(function () {
+        var shortest = findShortestPath(_this, arr);
+        if (shortest) {
+          var tmp;
+          shortest = $(shortest);
+          _this.animate(position[shortest.index()]);
+          shortest.animate(position[_this.index()]);
+
+          tmp = position[_this.index()];
+          position[_this.index()] = position[shortest.index()];
+          position[shortest.index()] = tmp;
+        } else {
+          _this.animate(position[_this.index()]);
+
+        }
+        $(document).unbind('mousemove');
+        $(document).unbind('mouseup');
+        _this.releaseCapture && _this.releaseCapture();
+      })
+      _this.setCapture && _this.setCapture();
+      return false;
+    });
+
+    function  findShortestPath(obj, arr) {
+      var shortestPath = Number.MAX_VALUE;
+      var shortestIndex = -1;
+      var source = obj.get(0);
+      for (var i = 0; i < arr.length; i++) {
+        arr[i].className = '';
+        if (arr[i] === source) continue;
+        if (collisionTest(source, arr[i])) {
+          var dis = calcDistance(source, arr[i]);
+          if (dis < shortestPath) {
+            dis = shortestPath;
+            shortestIndex = i;
+          }
+        }
+      }
+      if (shortestIndex == -1) {
+        return false;
+      } else {
+        return arr[shortestIndex];
+      }
+    }
+
+    function calcDistance(sources, target) {
+      var sourcesTop = sources.offsetHeight / 2 + sources.offsetTop;
+      var sourcesLeft = sources.offsetWidth / 2 + sources.offsetLeft;
+      var targetTop = target.offsetHeight / 2 + target.offsetTop;
+      var targetLeft = target.offsetWidth / 2 + target.offsetLeft;
+
+      var a = sourcesTop - targetTop;
+      var b = sourcesLeft - targetLeft;
+      return Math.sqrt(a * a + b * b);
+    }
+
+    function collisionTest(sources, target) {
+      var sourcesTop = sources.offsetTop;
+      var sourcesBottom = sourcesTop + sources.offsetHeight;
+      var sourcesLeft = sources.offsetLeft;
+      var sourcesRight = sourcesLeft + sources.offsetWidth;
+
+      var targetTop = target.offsetTop;
+      var targetBottom = targetTop + target.offsetHeight;
+      var targetLeft = target.offsetLeft;
+      var targetRight = targetLeft + target.offsetWidth;
+
+      if (sourcesTop > targetBottom || sourcesBottom < targetTop ||
+          sourcesRight < targetLeft || sourcesLeft > targetRight) {
+        return false;
+      } else {
+        return true;
+      }
+    }
+    $('#btn').click(function () {
+      position.sort(function () {
+        return Math.random() - 0.5;
+      })
+      $('li').each(function () {
+        $(this).animate(position[$(this).index()])
+      });
+    })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//    var btn = document.getElementById('btn');
+//    var box = document.getElementById('box');
+//    var list = box.children;
+//    var pos = [];
+//    for (var i = 0; i < list.length; i++) {
+//      pos[i] = {'left' : list[i].offsetLeft, 'top' : list[i].offsetTop};
+//    }
+//    for(var i = 0; i < list.length; i++) {
+//      list[i].style.left = pos[i].left + 'px';
+//      list[i].style.top = pos[i].top + 'px';
+//      list[i].style.position = 'absolute';
+//      list[i].style.margin = 0;
+//      drop(list[i]);
+//      list[i].index = i;
+//    }
+//
+//    function findMin(obj, arr) {
+//      var min = 9999999;
+//      var minIndex = -1;
+//      for (var i = 0; i < arr.length; i++) {
+//        arr[i].className = '';
+//        if (obj == arr[i]) continue;
+//        if (collTest(obj, arr[i])) {
+//          var dis = getDis(obj, arr[i])
+//          if (dis < min) {
+//            min = dis;
+//            minIndex = i;
+//          }
+//        }
+//      }
+//      if(minIndex == -1) {
+//        return false;
+//      } else {
+//        return arr[minIndex];
+//      }
+//    }
+//    function getDis(obj, obj1) {
+//      var t1 = obj.offsetHeight / 2 + obj.offsetTop;
+//      var l1 = obj.offsetWidth / 2 + obj.offsetLeft;
+//      var t2 = obj1.offsetHeight / 2 + obj1.offsetTop;
+//      var l2 = obj1.offsetWidth / 2 + obj1.offsetLeft;
+//      var a = t2 - t1;
+//      var b = l2 - l1;
+//      return Math.sqrt(a * a + b * b);
+//    }
+//
+//    function collTest(obj, obj1) {
+//      var l1 = obj.offsetLeft;
+//      var r1 = obj.offsetWidth + l1;
+//      var t1 = obj.offsetTop;
+//      var b1 = obj.offsetHeight + t1;
+//
+//      var l2 = obj1.offsetLeft;
+//      var r2 = obj1.offsetWidth + l2;
+//      var t2 = obj1.offsetTop;
+//      var b2 = obj1.offsetHeight + t2;
+//      if (l1 > r2 || r1 < l2 || t1 > b2 || b1 < t2) {
+//        return false;
+//      } else {
+//        return true;
+//      }
+//    }
+//    function drop(obj) {
+//      obj.onmousedown = function(e) {
+//        var ev = e || event;
+//        var disX = ev.clientX - obj.offsetLeft;
+//        var disY = ev.clientY - obj.offsetTop;
+//        document.onmousemove = function(e) {
+//          var ev = e || event;
+//          var left = ev.clientX - disX;
+//          var top = ev.clientY - disY;
+//          obj.style.left = left + 'px';
+//          obj.style.top = top + 'px';
+//          var near = findMin(obj, list);
+//          if (near) {
+//            near.className = 'on';
+//          }
+//        }
+//        document.onmouseup = function() {
+//          document.onmousemove = document.onmouseup = null;
+//          obj.releaseCapture && obj.releaseCapture();
+//          var near = findMin(obj, list);
+//          if (near) {
+//            var tmp;
+//            tmp = near.index;
+//            near.index = obj.index;
+//            obj.index = tmp;
+//            move(obj, pos[obj.index]);
+//            move(near, pos[near.index]);
+//          } else {
+//            move(obj, pos[obj.index]);
+//          }
+//        }
+//        obj.setCapture && obj.setCapture();
+//        return false;
+//      }
+//    }
+//    btn.onclick = function() {
+//      pos.sort(function(){
+//        return Math.random() - 0.5;
+//      })
+//      for (var i = 0; i < list.length; i++) {
+//        move(list[i], pos[list[i].index]);
+//      }
+//    }
+  </script>
+</body>
+</html>

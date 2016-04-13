@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <style>
+    div {
+      position: absolute;
+      top: 30px;
+      background-color: #f40;
+      width: 100px;
+      height: 100px;
+      left: 0;
+/*      opacity: 0;*/
+    }
+  </style>
+</head>
+<body>
+  <input type="button" value="btn">
+  <div></div>
+  <script>
+    var btn = document.getElementsByTagName('input')[0];
+    var box = document.getElementsByTagName('div')[0];
+
+    // function getStyle(obj, name) {
+    //   return obj.currentStyle ? obj.currentStyle : getComputedStyle(obj, false)[name];
+    // }
+
+    btn.onclick = function() {
+      move(box, {'width': 500, 'height': 600, 'opacity' : .5},{'type' : 'ease-in'});
+    }
+
+    function getStyle(obj, name) {
+      return obj.currrentStyle ? obj.currentStyle[name] : getComputedStyle(obj, false)[name];
+    }
+    function move(obj, json, options) {
+      var start = {};
+      var dis = {};
+      var options = options || {};
+      options.time = options.time || 1000;
+      options.type = options.type || 'linear';
+      var n = 0;
+      for(var name in json) {
+        start[name] = parseFloat(getStyle(obj, name));
+        dis[name] = json[name] - start[name];
+      }
+      var count = Math.round(options.time / 30);
+      clearInterval(obj.timer);
+      obj.timer = setInterval(function(){
+        n++;
+        for(var name in json) {
+          switch(options.type) {
+            case 'linear':
+                var a = n / count;
+                var current = start[name] + dis[name] * a;
+                break;
+            case 'ease-in':
+                var a = n / count;
+                var current =start[name] + dis[name] * Math.pow(a, 3);
+                break;
+            case 'ease-out':
+                var a = 1 - n / count;
+                var current = start[name] + dis[name] * (1 - Math.pow(a, 3));
+          }
+         if(name === 'opacity') {
+            obj.style[name] = current;
+             obj.style[name] = 'apha(opactiy:' + current * 100+ ')'
+          } else {
+          obj.style[name] = current + 'px';
+        }
+      }
+        if(n == count) {
+          clearInterval(obj.timer);
+          options.fn && options.fn();
+        }
+      },30)
+    }
+  </script>
+</body>
+</html>

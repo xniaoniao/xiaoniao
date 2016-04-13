@@ -1,0 +1,54 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>智能课堂 —— 微博ajax接口测试 - www.zhinengshe.com</title>
+  <link href="style/weibo.css" rel="stylesheet" type="text/css" />
+  <script src="require.js"></script>
+  <style>
+    #reply {
+      display: none;
+    }
+  </style>
+</head>
+
+<body style="height:3000px;">
+<div class="znsArea">
+  <!--留言-->
+  <div class="takeComment">
+    <textarea name="textarea" class="takeTextField" id="t1"></textarea>
+    <div class="takeSbmComment">
+      <input type="button" class="inputs" value="" id="btn1"/>
+      <span>(可按 Enter 回复)</span>
+    </div>
+  </div>
+  <!--已留-->
+  <div class="commentOn">
+    <div class="messList" id="msg_box">
+      <div class="reply" id="reply">
+          <p class="replyContent">{{content}}</p>
+          <p class="operation">
+            <span class="replyTime">{{time}}</span>
+            <span class="handle">
+              <a href="javascript:;" class="top">{{acc}}</a>
+              <a href="javascript:;" class="down_icon">{{ref}}</a>
+              <a href="javascript:;" class="cut">删除</a>
+            </span>
+          </p>
+        </div>
+    </div>
+    <div class="page" id="page_box">
+      <a href="javascript:;" class="active">1</a>
+      <a href="javascript:;">2</a>
+      <a href="javascript:;">3</a>
+    </div>
+  </div>
+</div>
+<script>
+require(['weibo_c'], function(mod) {
+  mod.send();
+  mod.getPages();
+})
+</script>
+</body>
+</html>

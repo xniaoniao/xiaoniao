@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <style>
+    li {
+      background-color: #f40;
+      width: 100px;
+      height: 100px;
+      border: 1px solid #000;
+      margin-top: -1px;
+    }
+  </style>
+</head>
+<body>
+  <ul>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+  </ul>
+  <script>
+    var box = document.getElementsByTagName('li');
+    function getStyle(obj, name) {
+      return obj.currentStyle ? obj.currentStyle : getComputedStyle(obj, false)[name];
+    }
+   
+    function move(obj, name, target, time) {
+      var start = parseFloat(getStyle(obj, name));
+      var dis = target - start;
+      var n = 0;
+      var count = Math.round(time / 30);
+      clearInterval(obj.timer);
+      obj.timer = setInterval(function(){
+        n++;
+        if(name == 'opacity') {
+          obj.style[name] = start + dis * n / count;
+          obj.style.filter = 'alpha(opacity:' + (start + dis * n / count) * 100 + ')';
+        }else {
+          obj.style[name] = start + dis * n / count + 'px';
+        }
+        if(n == count) {
+          clearInterval(obj.timer);
+        }
+      },30)
+    }
+     for (var i = 0; i < box.length; i++) {
+      box[i].onmouseover = function() {
+        move(this, 'width', 600, 1000);
+      }
+      box[i].onmouseout = function() {
+        move(this,'width', 100, 1000);
+      }
+    }
+  </script>
+</body>
+</html>

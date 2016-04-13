@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    div {
+      position: relative;
+      margin: 50px;
+      border: 1px solid #ccc;
+      height: 300px;
+      overflow: hidden;
+    }
+    .clearfix:after {
+      content: '';
+      display: block;
+      clear: both;
+    }
+    ul {
+      position: absolute;
+      overflow: hidden;
+      vertical-align: top;
+    }
+    li {
+       float: left;  
+    }
+    img {
+      width: 300px;
+      height: 300px;
+      margin: 0 10px;
+    }
+    #left {
+      position: absolute;
+      width: 30%;
+      height: 100%;
+      left: 0;
+      top: 0;
+    }
+    #right {
+      position: absolute;
+      width: 30%;
+      height: 100%;
+      right: 0;
+      top: 0;
+    }
+  </style>
+</head>
+<body>
+  <div>
+    <ul class="clearfix">
+      <li><img src="img/1.png" alt=""></li>
+      <li><img src="img/2.png" alt=""></li>
+      <li><img src="img/3.png" alt=""></li>
+      <li><img src="img/4.png" alt=""></li>
+    </ul>
+    <span id="left"></span>
+    <span id="right"></span>
+  </div>
+  <script>
+  var list = document.getElementsByTagName('ul')[0];
+  var timer = null;
+  list.innerHTML += list.innerHTML;
+  var allWidth = list.children[0].offsetWidth * list.children.length;
+  list.style.width = allWidth +'px';
+  function move () {
+    clearInterval(timer);
+    timer = setInterval(function(){
+      var left = list.offsetLeft - 5;
+      if(left <= -list.offsetWidth / 2) left = 0;
+      list.style.left = left + 'px';
+    },30)
+  }
+  move();
+  var leftBtn = document.getElementById('left');
+  leftBtn.onmouseover = function() {
+    move();
+  }
+  list.onmouseover = function() {
+    clearInterval(timer);
+  }
+  var rigthBtn = document.getElementById('right');
+  rigthBtn.onmouseover = function() {
+    clearInterval(timer);
+    timer = setInterval(function(){
+      var left = list.offsetLeft + 5;
+      if(left >= 0) left = -list.offsetWidth / 2;
+      list.style.left = left + 'px';
+    },30)
+  }
+  </script>
+</body>
+</html>

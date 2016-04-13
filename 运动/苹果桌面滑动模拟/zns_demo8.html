@@ -1,0 +1,58 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>iPhone手机图片查看器 - 智能课堂 - www.zhinengshe.com</title>
+<link href="style.css" rel="stylesheet" type="text/css" />
+<script src="javascript/birld.js"></script>
+
+</head>
+
+<body>
+
+<div id="iphone">
+	<div id="wrap">
+		<ul>
+			<li style="background:url(images/pic1.png);" title="智能课堂"></li>
+			<li style="background:url(images/pic2.png);" title="智能课堂"></li>
+			<li style="background:url(images/pic3.png);" title="智能课堂"></li>
+			<li style="background:url(images/pic4.png);" title="智能课堂"></li>
+		</ul>
+	</div>
+</div>
+<script>
+	var wrap = document.getElementById('wrap');
+	var imgBox = wrap.children[0];
+	var imgs = imgBox.children;
+	var now = 0;
+	imgBox.onmousedown = function(e) {
+		var ev = e || event;
+		var downX = ev.clientX;
+		var disX = ev.clientX - imgBox.offsetLeft;
+		document.onmousemove = function(e) {
+			var ev = e || event;
+			var left = ev.clientX - disX;
+			imgBox.style.left = left + 'px';
+		}
+		document.onmouseup = function(e) {
+			var ev = e || event;
+			var upLeft = ev.clientX;
+			document.onmousemove = document.onmouseup = null;
+			if (Math.abs(downX - upLeft) > 50) {
+				if(downX - upLeft > 0) {
+					now++;
+				} else {
+					now--;
+				}
+			}
+			if (now == imgs.length) now = imgs.length - 1;
+			if(now == -1) now = 0;
+			imgBox.style.left = -now * imgs[0].offsetWidth + 'px';
+			move(imgBox, {'left' : -now * imgs[0].offsetWidth});
+		}
+		return false;
+	}
+</script>
+
+</body>
+</html>

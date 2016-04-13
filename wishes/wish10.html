@@ -1,0 +1,308 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="author" content="智能社 - zhinengshe.com" />
+  <meta name="copyright" content="智能社 - zhinengshe.com" />
+  <meta name="description" content="智能社是一家专注于web前端开发技术的公司，目前主要提供JavaScript培训和HTML5培训两项服务，同时还推出了大量javascript基础知识教程，智能课堂为你带来全新的学习方法和快乐的学习体验。" />
+  <title>智能社— http://www.zhinengshe.com</title>
+  <link rel="stylesheet" href="./Css/wish.css" />
+  <script src="perfect.js"></script>
+  <script src="wish.js"></script>
+  <script src="jquery.js"></script>
+  <style>
+    .paper {
+      width: 200px;
+      height: 200px;
+    }
+    #mian {
+       display: none;
+    }
+  </style>
+</head>
+<body>
+<div id='top'>
+  <span id='send'></span>
+</div>
+<div id='main'>
+  <dl class='paper a1'>
+      <dt>
+          <span class='username'>{userName}</span>
+          <span class='num'>No.{id}</span>
+      </dt>
+      <dd class='content'>{content}</dd>
+      <dd class='bottom'>
+          <span class='time'>{time}</span>
+          <a href="" class='close'></a>
+      </dd>
+  </dl>
+</div>
+
+<div id="layer"></div>
+
+<div id='send-form' style="z-index:2147483647;">
+  <p class='title'><span>许下你的愿望</span><a href="javascript:;" id='close'></a></p>
+  <form action="" name='wish'>
+    <p>
+      <label for="username">昵称：</label>
+      <input type="text" name='username' id='username'/>
+    </p>
+    <p>
+      <label for="content">愿望：(您还可以输入&nbsp;<span id='font-num'>50</span>&nbsp;个字)</label>
+      <textarea name="content" id='content'></textarea>
+    <div id='phiz'>
+      <img src="./Images/phiz/zhuakuang.gif" alt="抓狂" />
+      <img src="./Images/phiz/baobao.gif" alt="抱抱" />
+      <img src="./Images/phiz/haixiu.gif" alt="害羞" />
+      <img src="./Images/phiz/ku.gif" alt="酷" />
+      <img src="./Images/phiz/xixi.gif" alt="嘻嘻" />
+      <img src="./Images/phiz/taikaixin.gif" alt="太开心" />
+      <img src="./Images/phiz/touxiao.gif" alt="偷笑" />
+      <img src="./Images/phiz/qian.gif" alt="钱" />
+      <img src="./Images/phiz/huaxin.gif" alt="花心" />
+      <img src="./Images/phiz/jiyan.gif" alt="挤眼" />
+    </div>
+    </p>
+    <span id='send-btn'></span>
+  </form>
+</div>
+<!--[if IE 6]>
+<script type="text/javascript" src="./Js/iepng.js"></script>
+<script type="text/javascript">
+  DD_belatedPNG.fix('#send,#close,.close','background');
+</script>
+<![endif]-->
+<script>
+
+  function wishEditCard(sendBtnClick, closeBtnClick) {
+    var sendForm;
+    var sendBtn;
+    var closeBtn;
+    var nickName;
+    var wishes;
+    var phiz;
+    var mask;
+    return {
+      'init': function () {
+        mask = document.getElementById('layer');
+        sendForm = document.getElementById('send-form');
+        sendBtn = document.getElementById('send-btn');
+        closeBtn = document.getElementById('close');
+        nickName = document.getElementById('username');
+        wishes = document.getElementById('content');
+
+        phiz = document.getElementsByTagName('img');
+        for (var i = 0; i < phiz.length; i++) {
+          phiz[i].onclick = function () {
+            wishes.value += '[' + this.alt + ']';
+          }
+        }
+        sendBtn.onclick = sendBtnClick;
+        closeBtn.onclick = closeBtnClick;
+      },
+      'nick': function () {
+        return $('#username').val();
+      },
+      'wishes': function () {
+        return $('#content').val();
+      },
+      'clear': function () {
+        $('#username').val('');
+        return $('#content').val('');
+      },
+      'show': function () {
+        mask.style.display = 'block';
+        sendForm.style.display = 'block';
+        sendForm.style.left = (document.documentElement.clientWidth
+            - sendForm.clientWidth) / 2 + 'px';
+        
+      },
+      'hide': function () {
+        mask.style.display = 'none';
+        sendForm.style.display = 'none';
+        
+      }
+    }
+  }
+
+  function wishCard() {
+    var card;
+
+    function strToFace(str) {
+      var face=['[抓狂]','[抱抱]','[害羞]','[酷]','[嘻嘻]','[太开心]','[偷笑]','[钱]','[花心]','[挤眼]'];
+      var faceImg=['zhuakuang','baobao','haixiu','ku','xixi','taikaixin','touxiao','qian','huaxin','jiyan'];
+      for (var i = 0; i < face.length; i++) {
+        if(str.indexOf(face[i]) != -1) {
+          str = str.replace(face[i], '<img src="./Images/phiz/'+faceImg[i]+'.gif">');
+          i--;
+        }
+      }
+      return str;
+    }
+
+    function format(str, data) {
+      return str.replace(/\{\w+\}/g, function (s) {
+        s = s.substring(1, s.length -1);
+        return data[s];
+      })
+    }
+
+    function  createView(parent) {
+      return parent.cloneNode(true);
+    }
+
+    function bindView(view, data) {
+      view.innerHTML = format(view.innerHTML, data);
+      view.removeAttribute('id');
+    }
+
+    function createItem(json) {
+      var date = new Date();
+      date.setTime(json.time * 1000);
+      var timeString = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() +
+          ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
+      var item = document.getElementById('main');
+      
+      var view = createView(item);
+      view.className = 'paper a' + (json.id % 5 + 1);
+      bindView(view, {
+        'userName' : json.username,
+        'id' : 'no' + json.id,
+        'content' : strToFace(json.content),
+        'time' : timeString
+      })
+      return view;
+    }
+
+    var data =  {
+      'init': function (json, deleteCallback) {
+        card = createItem(json);
+        var deleteBtn = card.getElementsByTagName('a')[0];
+        deleteBtn.onclick = function () {
+          deleteCallback && deleteCallback(data);
+        }
+      },
+      'getView': function () {
+        return card;
+      },
+      'getId': function () {
+        return id;
+      }
+    }
+
+    return data;
+  }
+
+  function wishBoard() {
+    var wishEdit;
+    var showBtn;
+    var container;
+
+    function clearWishes() {
+      while (container.hasChildNodes()) {
+        container.removeChild(container.lastChild)
+      }
+    }
+
+    //wish.php?act=get
+    //{error:0, msg:[{'id':1, 'username':'xxx', 'content':'xxx'},{},{},{}.......]}
+    function refresh() {
+      getAllWishes(function (json) {
+        // short as.
+        showAllWishes(json.msg);
+      }, function (json) {
+        alert(json.msg);
+      });
+    }
+
+    function deleteCard(card) {
+      //wish.php?act=delete&id=0;
+      // {error:1, msg:xxx}
+      if (confirm('确定删除?')) {
+        deleteWish(card.getId(), function () {
+          container.removeChild(card.getView());
+        }, function (json) {
+          alert('删除失败');
+        })
+      }
+    }
+
+    function drag(obj) {
+      obj.onmousedown = function (e) {
+        var ev = e || event;
+        var disX = ev.clientX - obj.offsetLeft;
+        var disY = ev.clientY - obj.offsetTop;
+        document.onmousemove = function (e) {
+          var ev =  e || event;
+          var left = ev.clientX - disX;
+          var top = ev.clientY - disY;
+          obj.style.left = left + 'px';
+          obj.style.top = top + 'px';
+
+        }
+        document.onmouseup = function () {
+          document.onmousemove = document.onmouseup = null;
+          obj.releaseCapture && obj.releaseCapture();
+        }
+        obj.setCapture && obj.setCapture();
+        return false;
+      }
+    }
+
+    function  rndPosition(obj) {
+      obj.style.left = parseInt(Math.random() * (document.documentElement.clientWidth - obj.offsetWidth)) + 'px';
+      obj.style.top = parseInt((Math.random() * (document.documentElement.clientHeight - obj.offsetHeight - 150))) + 'px';
+    }
+
+    function showAllWishes(json) {
+      for (var i = 0; i < json.length; i++) {
+        var card = wishCard();
+        card.init(json[i], deleteCard);
+
+        drag(card.getView());
+        rndPosition(card.getView());
+        container.appendChild(card.getView());
+      }
+    }
+
+    return {
+      'init' : function () {
+        showBtn = document.getElementById('send');
+        container = document.getElementById('main');
+        showBtn.onclick = function () {
+          wishEdit.clear();
+          wishEdit.show();
+        };
+
+        wishEdit = wishEditCard(function () {
+          wishEdit.hide();
+
+          addWish({
+            'nick': wishEdit.nick(),
+            'wishes': wishEdit.wishes(),
+            'succeedFn': function (json) {
+              clearWishes();
+              refresh();
+            },
+            'failedFn': function (json) {
+              alert('添加失败');
+            }
+          });
+        }, function () {
+          wishEdit.hide();
+        });
+
+        wishEdit.init();
+      },
+      'refresh': refresh
+    }
+  }
+
+  var board = wishBoard();
+  board.init();
+  board.refresh();
+
+
+</script>
+</body>
+</html>

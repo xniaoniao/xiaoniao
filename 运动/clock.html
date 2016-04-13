@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <script src="javascript/birld.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    p {
+      float: left;
+      width: 24px;
+      height: 35px;
+      background: url(img/num.png);
+    }
+    span {
+      height: 35px;
+      line-height: 35px;
+      font-size: 20px;
+      float: left;
+    }
+    div {
+      margin:50px;
+    }
+  </style>
+</head>
+<body>
+  <div>
+    <p></p>
+    <p></p>
+    <span>:</span>
+    <p></p>
+    <p></p>
+    <span>:</span>
+    <p></p>
+    <p></p>
+  </div>
+  <script>
+  function toZero(n) {
+    return n < 10 ? '0' + n : '' + n;
+  }
+  var time = document.getElementsByTagName('p');
+    function clock() {
+      var date = new  Date();
+      var hours = date.getHours();
+      var minutes = date.getMinutes();
+      var seconds = date.getSeconds();
+      var str = toZero(hours) + toZero(minutes) + toZero(seconds);
+      for (var i = 0; i < time.length; i++) {
+        move(time[i], {'backgroundPositionY' : -str.charAt(i) * 35}, {'duration' : 500});
+      }
+    }
+    clock();
+    setInterval(clock,1000);
+  </script>
+</body>
+</html>

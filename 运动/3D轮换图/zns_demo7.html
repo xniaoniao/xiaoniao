@@ -1,0 +1,71 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>三维图片轮换 - 智能设 - www.zhinengshe.com</title>
+<link href="zns_style.css" rel="stylesheet" type="text/css" />
+<script src="javascript/birld.js"></script>
+
+</head>
+
+<body>
+<ul id="znsRotatePic">
+	<li class="pic1" style="z-index:3;">
+		<a href="#"><img src="images/pic1.gif" alt="pic1" class="unactive" longdesc="http://www.zns.com" width="187" /></a><!-- 208 -->
+		<span></span>
+	</li>
+	<li class="pic2" style="z-index:5;">
+		<a href="#"><img src="images/pic2.gif" alt="pic2" longdesc="http://www.zns.com" width="208" /></a>
+		<span></span>
+	</li>
+	<li class="pic3" style="z-index:3">
+		<a href="http://www.zns.com/"><img src="images/pic3.gif" alt="pic3" class="unactive" longdesc="http://www.zns.com" width="187" /></a>
+		<span></span>
+	</li>
+</ul>
+<script>
+	var box = document.getElementById('znsRotatePic');
+	var list = box.children;
+	var imgs = box.getElementsByTagName('img');
+	var link = box.getElementsByTagName('a');
+	link[0].onclick = function() {
+		toRight();
+		return false;
+	}
+	link[2].onclick = function() {
+		toLeft();
+		return false;
+	}
+	var position = [];
+	for (var i = 0; i < list.length; i++) {
+	  position.push({
+	  	'left' : list[i].offsetLeft,
+	  	'top' : list[i].offsetTop,
+	  	'imgWidth' : imgs[i].offsetWidth,
+	  	'imgTop' : imgs[i].offsetTop,
+	  	'imgsOpacity' : parseFloat(getStyle(imgs[i], 'opacity')),
+	  	'linkClick' : link[i].onclick,
+	  	'listZindex' : getStyle(list[i], 'zIndex')
+	  });
+	}
+	console.log(position[0].imgWidth);
+	function resetPosition() {
+		for (var i = 0; i < list.length; i++) {
+		  move(list[i], {'left' : position[i].left, 'top' : position[i].top});
+		  move(imgs[i], {'width' : position[i].imgWidth, 'top' : position[i].imgTop,
+			'opacity' : position[i].imgsOpacity})
+			list[i].style.zIndex = position[i].listZindex;
+			link[i].onclick = position[i].linkClick;
+		}
+	}
+	function toRight() {
+		position.push(position.shift());
+		resetPosition();
+	}
+	function toLeft() {
+		position.unshift(position.pop());
+		resetPosition();
+	}
+</script>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    #box {
+      position: absolute;
+      bottom: 0;
+      text-align: center;
+      width: 100%;
+    }
+    img {
+      width: 64px;
+    }
+  </style>
+</head>
+<body>
+  <div id="box">
+    <img src="img2/1.png" alt="" />
+    <img src="img2/2.png" alt="" />
+    <img src="img2/3.png" alt="" />
+    <img src="img2/4.png" alt="" />
+    <img src="img2/5.png" alt="" />
+  </div>
+  <script>
+    var box = document.getElementById('box');
+    var imgs = document.getElementsByTagName('img');
+    document.onmousemove = function(e) {
+      var ev = e || event;
+      var disX = ev.clientX;
+      var disY = ev.clientY;
+      for(var i = 0; i < imgs.length; i++) {
+        var targetToTopDistance =  imgs[i].offsetTop + box.offsetTop + imgs[i].offsetHeight / 2;
+        var targetToLeftDistance = imgs[i].offsetLeft + imgs[i].offsetWidth / 2;
+        var a = targetToTopDistance - disY;
+        var b = targetToLeftDistance - disX;
+        var c = Math.sqrt(a * a + b * b);
+        var scale = 1 - c / 500;
+        if(scale < 0.5) scale = 0.5;
+//        console.log(targetToTopDistance);
+        imgs[i].style.width = scale * 128 + 'px';
+      }
+    }
+  </script>
+</body>
+</html>

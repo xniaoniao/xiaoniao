@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+</head>
+<body>
+  <input type="text" value="0">
+  <script src="birldy.js"> </script>
+  <script>
+    var inp = document.getElementsByTagName('input')[0];
+    var timer = null;
+    inp.onclick = function() {
+      var start = 0;
+      var dis = 100 - start;
+      var n = 0;
+      var time = 1000;
+      var count = Math.round(time / 30);
+      clearInterval(timer)
+      timer = setInterval(function(){
+        n++;
+        var a = 1 - n / count;
+        var current = start + dis * (1 - Math.pow(a, 3));
+        inp.value = current.toFixed(2);
+        if(count == n) {
+          clearInterval(timer);
+        }
+      }, 30)
+    }
+  </script>
+</body>
+</html>

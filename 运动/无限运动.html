@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <script src="javascript/birld.js"></script>
+  <style>
+    #box {
+      width: 100px;
+      height: 100px;
+      background-color: #f40;
+      position: absolute;
+      border-radius: 100px;
+      left:0;
+      top: 0;
+    }
+  </style>
+</head>
+<body>
+  <div id="box"></div>
+  <script>
+    var box = document.getElementById('box');
+    var arr = [{left:0, top : 0}, {left:100, top: 300}, {left: 300, top: 0}];
+    var now = 0;
+    function next() {
+      now++;
+      if(now == arr.length) now = 0;
+      move(box, arr[now], {fn : next});
+    }
+    next();
+  </script>
+</body>
+</html>

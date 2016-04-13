@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <style>
+    body {
+      height: 3000px;
+      position: relative;
+    }
+    input {
+      position: fixed;
+      bottom: 50px;
+      right: 50px;
+      font-size: 50px;
+      width: 50px;
+      height: 50px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <input type="button" value="back" />
+<script>
+  var btn = document.getElementsByTagName('input')[0];
+  var timer = null;
+  var bSys = false;
+  window.onscroll = function() {
+    if(bSys) {
+      clearInterval(timer);
+    }
+    bSys = true;
+    var scrollTop = document.body.scrollTop || document.documentElement.scrollTop;
+    if(scrollTop > 1)
+    {
+      btn.style.display = 'block';
+    } else {
+      btn.style.display = 'none';
+    }
+}
+  btn.onclick = function() {
+    var start = document.body.scrollTop || document.documentElement.scrollTop;
+    var dis = 0 - start;
+    var time = 1000;
+    var count = Math.round(time / 30);
+    var n = 0;
+    clearInterval(timer);
+    timer = setInterval(function(){
+      bSys = false;
+      n++;
+      var a = n / count;
+      var current = start + dis * a;
+      document.body.scrollTop = document.documentElement.scrollTop = current;
+      if(n == count) {
+        clearInterval(timer);
+      }
+    },30)
+  }
+</script>
+</body>
+</html>

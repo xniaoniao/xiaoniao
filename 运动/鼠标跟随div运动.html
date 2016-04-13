@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <script src="javascript/birld.js"></script>
+  <!--<script src="javascript/鼠标跟随div移动.js"></script>-->
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    
+    ul {
+      width: 510px;
+      margin: 50px auto;
+    }
+    
+    li {
+      width: 150px;
+      height: 150px;
+      float: left;
+      margin: 10px;
+      overflow: hidden;
+      position: relative;
+    }
+    
+    img {
+      width: 100%;
+      height: 100%;
+    }
+    
+    span {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      color: #fff;
+      background: red;
+      opacity: 0.5;
+      line-height: 150px;
+      text-align: center;
+      top: 0;
+      font-size: 50px;
+      left: 200px;
+    }
+  </style>
+</head>
+<body>
+  <ul>
+    <li>
+      <img src="img/1.jpg" alt="">
+      <span>01</span>
+    </li>
+    <li>
+      <img src="img/2.jpg" alt="">
+      <span>02</span>
+    </li>
+    <li>
+      <img src="img/3.jpg" alt="">
+      <span>03</span>
+    </li>
+    <li>
+      <img src="img/4.jpg" alt="">
+      <span>04</span>
+    </li>
+    <li>
+      <img src="img/5.jpg" alt="">
+      <span>05</span>
+    </li>
+    <li>
+      <img src="img/6.jpg" alt="">
+      <span>06</span>
+    </li>
+    <li>
+      <img src="img/7.jpg" alt="">
+      <span>07</span>
+    </li>
+    <li>
+      <img src="img/8.jpg" alt="">
+      <span>08</span>
+    </li>
+    <li>
+      <img src="img/9.jpg" alt="">
+      <span>09</span>
+    </li>
+  </ul>
+  <script>
+    function toAngle(radians) {
+      return radians * 180 / Math.PI;
+    }
+    function hoverDirection(obj, ev) {
+      var disX = ev.clientX;
+      var disY = ev.clientY;
+      var toBoxCenterLeftDistance = obj.offsetLeft + obj.offsetWidth / 2;
+      var toBoxCenterTopDistance = obj.offsetTop + obj.offsetHeight / 2;
+      var a = toBoxCenterLeftDistance  - disX;
+      var b = toBoxCenterTopDistance - disY;
+      return (Math.round((toAngle(Math.atan2(a, b)) + 180) / 90)) % 4;
+  }
+var imgs = document.getElementsByTagName('li');
+var mask = document.getElementsByTagName('span');
+for(var i = 0; i < imgs.length; i++) {
+  imgs[i].index = i;
+  imgs[i].onmouseover = function(e) {
+    var ev = e || event;
+    var n = hoverDirection(this, ev);
+    console.log(n);
+    var from = ev.formElement || ev.relatedTarget;
+    if(this.contains(from)) return;
+    switch(n) {
+      case 0:
+        mask[this.index].style.left = 0 + 'px';
+        mask[this.index].style.top = 200 + 'px';
+        break;
+      case 1:
+        mask[this.index].style.left = 200;
+        mask[this.index].style.top = 0 + 'px';
+        break;
+     case 2:
+        mask[this.index].style.left = 0 + 'px';
+        mask[this.index].style.top = -200 + 'px';
+        break;
+     case 3:
+        mask[this.index].style.left = -200;
+        mask[this.index].style.top = 0 + 'px';
+    }
+    move(mask[this.index], {'top' : 0, 'left' : 0 })
+  }
+  imgs[i].onmouseout = function(e) {
+    var ev = e || evetn;
+    var to = ev.toElement || ev.relatedTarget;
+    var n = hoverDirection(this, ev);
+    if(this.contains(to)) return;
+    switch(n) {
+      case 0:
+        move(mask[this.index], {'left' : 0, 'top' : 200});
+        break;
+     case 1:
+        move(mask[this.index], {'left' : 200, 'top' : 0});
+        break;
+     case 2:
+        move(mask[this.index], {'left' : 0, 'top' : -200});
+        break;
+     case 3:
+        move(mask[this.index], {'left' : -200, 'top' : 0});
+    }
+  }
+}
+  </script>
+</body>
+
+</html>
